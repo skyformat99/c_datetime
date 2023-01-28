@@ -241,11 +241,15 @@ int calcWeekdayIdx(long timestamp,int timezoneOffset,int *ans){
     timestamp -= timezoneOffset;
     long totalDays = timestamp/UNIX_DAY;
     if(totalDays > -1*WEEK_START_DAYS_BEFORE && totalDays < WEEK_START_DAYS_AFTER){
-        return (int)totalDays + EPOCH_WEEK_CORRECTION;
+        *ans = (int)totalDays + EPOCH_WEEK_CORRECTION;
     }
-    totalDays = totalDays > 0?totalDays - WEEK_START_DAYS_AFTER:
-      -1*totalDays - WEEK_START_DAYS_BEFORE;
-    *ans = totalDays % 7;
+    else if (totalDays > 0) {
+        *ans = (totalDays - WEEK_START_DAYS_AFTER) % 7;
+    }
+    else {
+        totalDays = (-1*totalDays - WEEK_START_DAYS_BEFORE) % 7;
+        *ans = 6 - totalDays;
+    }
     return 0;
 }
 
